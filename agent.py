@@ -26,8 +26,3 @@ class Agent:
        # judge if reach to final state 
        if self.state == 3 :
            print("final")    
-agent = Agent()
-agent.receive_word("month")
-agent.recongnize()
-agent.receive_word("num")
-agent.recongnize()          
