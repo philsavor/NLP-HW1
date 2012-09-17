@@ -5,16 +5,25 @@ class TextManager :
     To get word one by one 
     """
     def __init__(self) :     
-        self.file = open("in_text")
-        self.lines = self.file.readlines()
+        self.file = None 
+        self.lines = None 
         self.line_count = 0
         self.word_count = 0 
-        self.max_line_count = len(self.lines)
+        self.max_line_count = 0 
         self.max_word_count = 0 
         #represent each line
         self.line = None   
         #It is a list containing each word from a certain line
         self.words = None 
+
+    def set_file(self, file_name):
+        """
+        set_file used to set the file for the class and do some
+        initial things.
+        """
+        self.file = open(file_name)
+        self.lines = self.file.readlines()
+        self.max_line_count = len(self.lines)
 
     def test_put_out(self) :
         """
@@ -48,6 +57,8 @@ class TextManager :
          """
          To get a new word, if there is no new word ,return None.
          """
+         if self.file == None:
+              return "ERROR:you should tell me the file name"
          #initial state
          if self.line == None: 
               self.line = self._get_next_line()

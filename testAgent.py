@@ -1,7 +1,6 @@
 #!/usr/bin/python -B
 import agent
-agent = agent.Agent()
-agent.receive_word("month")
-agent.recongnize()
-agent.receive_word("num")
-agent.recongnize()          
+
+ag = agent.Agent()
+ag.set_file("in_text")
+ag.parse_file("dsf")
