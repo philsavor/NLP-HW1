@@ -78,7 +78,4 @@ class TextManager :
               #reset the max_wor_count & word_count value
               self.max_word_count = len(self.words)  
               self.word_count = 0
-              #get word
-              word = self.words[self.word_count]
-              self.word_count += 1
-              return word
+              return '\n'
