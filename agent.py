@@ -8,20 +8,21 @@ class Agent:
    contain the "absolute date".
    """
    month = ('January','February','March','April','May','June', \
-            'July','August','September','October','Novermber', \
-            'December')
+            'July','August','September','October','November','December',\
+            'Jan','Feb','Mar','Apr','May','Aug','Sept','Oct','Nov','Dec')
    day = ('1st','2nd','3rd','4th','5th','6th','7th','8th','9th', \
-          '10th','11th','12th','13th','14th','15th','16th','17th','18th','19th', \
-          '20th','21th','22th','23th','24th','25th','26th','27th','28th','29th', \
-          '30th','31th','1','2','3','4','5','6','7','8','9', \
+          '10th','11st','12nd','13rd','14th','15th','16th','17th','18th','19th', \
+          '20th','21st','22nd','23rd','24th','25th','26th','27th','28th','29th', \
+          '30th','31st','1','2','3','4','5','6','7','8','9', \
           '10','11','12','13','14','15','16','17','18','19', \
           '20','21','22','23','24','25','26','27','28','29', \
           '30','31')
+   #format: *
    holiday_oneword = ('Halloween','Thanksgiving','Christmas')
    #format: * Day
    holiday_twoword = ('Groundhog','Presidents','Earth','Arbor','Memorial',\
-                      'Flag','Independence','Labor','Patriot',\
-                      'Constitution','Columbus','Mole','Veterans')
+                      'Flag','Independence','Labor','Patriot','Christmas',\
+                      'Constitution','Columbus','Mole','Veterans','Patriots')
    #format: * * Day
    holiday_pair_words = {'Valentine':'s','National':'Doctors','April':'Fools',\
                         'Mother':'s' , 'Armed':'Forces' , 'Father':'s',\
@@ -30,14 +31,18 @@ class Agent:
    holiday_twoword_no_Day = {'Fat':'Tuesday','Ash':'Wednesday','Vernal':'Equinox',\
                              'Palm':'Sunday','Good':'Friday','Easter':'Sunday',\
                              'Pentecost':'Sunday','Summer':'Solstice',\
-                             'Rosh':'Hashanah','Autumnal':'equinox','yom':'Kippur',\
-                             'Simchat':'Torah','Winter':'Solstice'} 
+                             'Rosh':'Hashanah','Autumnal':'equinox','Yom':'Kippur',\
+                             'Simchat':'Torah','Winter':'Solstice','Marathon':'Monday'} 
+   #format: * * * Day
+   holiday_pair_one = {'New':'Year','St':'Patrick','Pearl':'Harbor'}
+   holiday_pair_two = {'Year':'s'  ,'Patrick':'s' ,'Harbor':'Remembrance'}
+
    def __init__(self):
        """
        used to do some initial things.
        """
        self.__current_state = 0 
-       self.__final_states = {3,6,8,9,11,14,16}
+       self.__final_states = {3,6,8,9,11,14,16,20}
        self.__current_word = None
        self.__buffer_words = [] 
        self.__text_manager = None
@@ -78,7 +83,7 @@ class Agent:
                 if self.__current_word in self.month :
                     self.__current_state = 1
                     self.__buffer_words.append(self.__current_word)
-                elif self.__current_word == "the" :
+                elif self.__current_word == "the" or self.__current_word == "The":
                     self.__current_state = 2 
                     self.__buffer_words.append(self.__current_word)
                 elif self.__current_word in self.day :
@@ -95,6 +100,9 @@ class Agent:
                     self.__buffer_words.append(self.__current_word)
                 elif self.__current_word in self.holiday_twoword_no_Day.keys():
                     self.__current_state = 15 
+                    self.__buffer_words.append(self.__current_word)
+                elif self.__current_word in self.holiday_pair_one.keys():
+                    self.__current_state = 17 
                     self.__buffer_words.append(self.__current_word)
             #state 1
             elif self.__current_state == 1 :
@@ -172,6 +180,33 @@ class Agent:
             elif self.__current_state == 15 :
                 if self.__current_word == self.holiday_twoword_no_Day.get(self.__buffer_words[0]) :
                     self.__current_state = 16 
+                    self.__buffer_words.append(self.__current_word)
+                else:
+                     self.__current_state = 0
+                     self.__buffer_words = []
+                     continue
+            #state 17 
+            elif self.__current_state == 17 :
+                if self.__current_word == self.holiday_pair_one.get(self.__buffer_words[0]) :
+                    self.__current_state = 18 
+                    self.__buffer_words.append(self.__current_word)
+                else:
+                     self.__current_state = 0
+                     self.__buffer_words = []
+                     continue
+            #state 18 
+            elif self.__current_state == 18 :
+                if self.__current_word == self.holiday_pair_two.get(self.__buffer_words[1]) :
+                    self.__current_state = 19 
+                    self.__buffer_words.append(self.__current_word)
+                else:
+                     self.__current_state = 0
+                     self.__buffer_words = []
+                     continue
+            #state 19 
+            elif self.__current_state == 19 :
+                if self.__current_word == 'Day' :
+                    self.__current_state = 20 
                     self.__buffer_words.append(self.__current_word)
                 else:
                      self.__current_state = 0
