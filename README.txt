@@ -18,17 +18,19 @@ format:
   Fat Tuesday
 7.Word Word Word Day:
   Pearl Harbor Remembrance Day  
+8.Holiday, year:
+  March 15, 2011    Christmas Day, 2012
  
 The algorithm is based on the theory of automata.
 Programming language is python and the platform is Linux.
 
 [FILES]
 README.txt
-agent.py (the main file, containing the algorithm)
-text_manager.py (used to parse file and provide word one by one)
+agent.py (The main file, containing the algorithm)
+text_manager.py (Used to parse file and provide word one by one)
 
 [HOW TO USE]
-1../agent.py
-2.input text file's name such as input.txt
-(this text file shold be put into the same directory as agent.py)
-3.view the result in file out.txt
+1.Bash: ./agent.py
+2.Input text file's name such as input.txt
+(This text file shold be put into the same directory as agent.py)
+3.View the result in file out.txt

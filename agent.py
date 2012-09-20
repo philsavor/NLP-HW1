@@ -161,7 +161,7 @@ class Agent:
                      continue
             #state 10 
             elif self.__current_state == 10 :
-                if self.__current_word == 'Day' :
+                if self.__current_word == 'Day' or self.__current_word == 'Eve' :
                      self.__current_state = 11 
                      self.__buffer_words.append(self.__current_word)
                 elif self.__buffer_words[0] in self.holiday_oneword:
@@ -285,7 +285,7 @@ class Agent:
 
 if __name__ == '__main__':
     agent = Agent()
-    input_file_name = raw_input( "Please put in the file's name:")
+    input_file_name = raw_input( "Please input the file's name:")
     agent.set_file(input_file_name)
     agent.parse_file("out.txt")
-    print "The result has been saved in out.txt"
+    print "The result has been saved in out.txt."
