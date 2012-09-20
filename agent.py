@@ -44,6 +44,7 @@ class Agent:
        used to do some initial things.
        """
        self.__current_state = 0 
+       #not take year(e.g. 1990) into consideration
        self.__final_states = {3,6,8,11,14,16,20}
        self.__current_word = None
        self.__buffer_words = [] 
@@ -164,7 +165,7 @@ class Agent:
                      self.__current_state = 11 
                      self.__buffer_words.append(self.__current_word)
                 elif self.__buffer_words[0] in self.holiday_oneword:
-                     self.__current_state = 11 
+                     self.__current_state = 200 
                 else:
                      self.__current_state = 0
                      self.__buffer_words = []
@@ -256,8 +257,15 @@ class Agent:
                      self.__current_state = 0
                      self.__buffer_words = []
                      continue
-            #final states  
-            if self.__current_state in self.__final_states:
+            #year
+            elif self.__current_state in self.__final_states:
+               if self.__current_word.isdigit():
+                    self.__current_state = 100
+                    self.__buffer_words.append(', ' + self.__current_word)
+               else:
+                    self.__current_state = 200
+            #final step  
+            if self.__current_state == 100 or self.__current_state == 200:
                 for word in self.__buffer_words:
                     #deal with the situation like "Mother's Day"
                     if word == 's':
@@ -266,12 +274,10 @@ class Agent:
                         self.__des_file.write(word)
                     self.__des_file.write(' ')
                 self.__des_file.write('\n')
-                #for the situation like:Christmas Day(not Christmas)
-                if self.__current_state == 11 and \
-                   self.__buffer_words[0] in self.holiday_oneword:
-                       self.__current_state = 0
-                       self.__buffer_words = []
-                       continue
+                if self.__current_state == 200:
+                    self.__current_state = 0
+                    self.__buffer_words = []
+                    continue
                 #initialize the state and buffer
                 self.__current_state = 0
                 self.__buffer_words = [] 
