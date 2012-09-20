@@ -221,7 +221,11 @@ class Agent:
             #final states  
             if self.__current_state in self.__final_states:
                 for word in self.__buffer_words:
-                    self.__des_file.write(word)
+                    #deal with the situation like "Mother's Day"
+                    if word == 's':
+                        self.__des_file.write('\'s')
+                    else:
+                        self.__des_file.write(word)
                     self.__des_file.write(' ')
                 self.__des_file.write('\n')
                 #initialize the state and buffer
