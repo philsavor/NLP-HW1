@@ -27,14 +27,14 @@ class Agent:
                       'Constitution','Columbus','Mole','Veterans','Patriots')
    #format: * * Day
    holiday_pair_words = {'Valentine':'s','National':'Doctors','April':'Fools',\
-                        'Mother':'s' , 'Armed':'Forces' , 'Father':'s',\
-                        'Children':'s', 'All':'Saints'}                    
+                         'Mother':'s' , 'Armed':'Forces' , 'Father':'s',\
+                         'Children':'s', 'All':'Saints', 'Day':'after'}                    
    #format: * *
    holiday_twoword_no_Day = {'Fat':'Tuesday','Ash':'Wednesday','Vernal':'Equinox',\
-                             'Palm':'Sunday','Good':'Friday','Easter':'Sunday',\
-                             'Pentecost':'Sunday','Summer':'Solstice',\
+                             'Palm':'Sunday','Good':'Friday','Easter':'Sunday','Spring':'Break',\
+                             'Pentecost':'Sunday','Summer':'Solstice','Floating':'Holiday',\
                              'Rosh':'Hashanah','Autumnal':'equinox','Yom':'Kippur',\
-                             'Simchat':'Torah','Winter':'Solstice','Marathon':'Monday'} 
+                             'Simchat':'Torah','Winter':'Holiday','Marathon':'Monday'} 
    #format: * * * Day
    holiday_pair_one = {'New':'Year','St':'Patrick','Pearl':'Harbor'}
    holiday_pair_two = {'Year':'s'  ,'Patrick':'s' ,'Harbor':'Remembrance'}
@@ -44,7 +44,7 @@ class Agent:
        used to do some initial things.
        """
        self.__current_state = 0 
-       self.__final_states = {3,6,8,9,11,14,16,20}
+       self.__final_states = {3,6,8,11,14,16,20}
        self.__current_word = None
        self.__buffer_words = [] 
        self.__text_manager = None
@@ -96,7 +96,7 @@ class Agent:
                     self.__current_state = 7 
                     self.__buffer_words.append(self.__current_word)
                 elif self.__current_word in self.holiday_oneword:
-                    self.__current_state = 9 
+                    self.__current_state = 10 
                     self.__buffer_words.append(self.__current_word)
                 elif self.__current_word in self.holiday_twoword:
                     self.__current_state = 10 
@@ -109,6 +109,9 @@ class Agent:
                     self.__buffer_words.append(self.__current_word)
                 elif self.__current_word in self.holiday_pair_one.keys():
                     self.__current_state = 17 
+                    self.__buffer_words.append(self.__current_word)
+                elif self.__current_word == "Martin":
+                    self.__current_state = 21 
                     self.__buffer_words.append(self.__current_word)
             #state 1
             elif self.__current_state == 1 :
@@ -158,8 +161,10 @@ class Agent:
             #state 10 
             elif self.__current_state == 10 :
                 if self.__current_word == 'Day' :
-                    self.__current_state = 11 
-                    self.__buffer_words.append(self.__current_word)
+                     self.__current_state = 11 
+                     self.__buffer_words.append(self.__current_word)
+                elif self.__buffer_words[0] in self.holiday_oneword:
+                     self.__current_state = 11 
                 else:
                      self.__current_state = 0
                      self.__buffer_words = []
@@ -178,6 +183,12 @@ class Agent:
                 if self.__current_word == 'Day' :
                     self.__current_state = 14 
                     self.__buffer_words.append(self.__current_word)
+                #for the situation like: Day after Christmas
+                elif self.__buffer_words[0] == 'Day' and \
+                     self.__buffer_words[1] == 'after' and \
+                     self.__current_word in self.holiday_oneword:
+                      self.__current_state = 14
+                      self.__buffer_words.append(self.__current_word)
                 else:
                      self.__current_state = 0
                      self.__buffer_words = []
@@ -218,6 +229,33 @@ class Agent:
                      self.__current_state = 0
                      self.__buffer_words = []
                      continue
+            #state 21 
+            elif self.__current_state == 21 :
+                if self.__current_word == 'Luther' :
+                    self.__current_state = 22 
+                    self.__buffer_words.append(self.__current_word)
+                else:
+                     self.__current_state = 0
+                     self.__buffer_words = []
+                     continue
+            #state 22 
+            elif self.__current_state == 22 :
+                if self.__current_word == 'King' :
+                    self.__current_state = 23 
+                    self.__buffer_words.append(self.__current_word + ',')
+                else:
+                     self.__current_state = 0
+                     self.__buffer_words = []
+                     continue
+            #state 23 
+            elif self.__current_state == 23 :
+                if self.__current_word == 'Jr' :
+                    self.__current_state = 19 
+                    self.__buffer_words.append(self.__current_word + '.')
+                else:
+                     self.__current_state = 0
+                     self.__buffer_words = []
+                     continue
             #final states  
             if self.__current_state in self.__final_states:
                 for word in self.__buffer_words:
@@ -228,6 +266,12 @@ class Agent:
                         self.__des_file.write(word)
                     self.__des_file.write(' ')
                 self.__des_file.write('\n')
+                #for the situation like:Christmas Day(not Christmas)
+                if self.__current_state == 11 and \
+                   self.__buffer_words[0] in self.holiday_oneword:
+                       self.__current_state = 0
+                       self.__buffer_words = []
+                       continue
                 #initialize the state and buffer
                 self.__current_state = 0
                 self.__buffer_words = [] 
