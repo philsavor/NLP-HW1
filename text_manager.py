@@ -1,4 +1,5 @@
 import re
+import sys
 
 class TextManager :
     """ 
@@ -21,9 +22,14 @@ class TextManager :
         set_file used to set the file for the class and do some
         initial things.
         """
-        self.file = open(file_name)
-        self.lines = self.file.readlines()
-        self.max_line_count = len(self.lines)
+        try:
+            self.file = open(file_name)
+            self.lines = self.file.readlines()
+            self.max_line_count = len(self.lines)
+        except IOError as e:
+            print "I/O error({0}): {1}".format(e.errno, e.strerror)
+            print "Please try again!!!\n"
+            raise
 
     def test_put_out(self) :
         """

@@ -1,3 +1,5 @@
+#!/usr/bin/python -B
+
 import text_manager
 
 class Agent:
@@ -46,6 +48,7 @@ class Agent:
        self.__current_word = None
        self.__buffer_words = [] 
        self.__text_manager = None
+       self.__des_file = None
    
    def set_file(self,file_name):
        """
@@ -59,6 +62,9 @@ class Agent:
        parse the input file and crate a result file, which path is 
        same as the parameter value. 
        """
+       #set the destination file name
+       self.__des_file = open(des_file_name,"wb")
+
        if self.__text_manager == None:
            return "ERROR:no input file!"
        while 1:
@@ -214,7 +220,18 @@ class Agent:
                      continue
             #final states  
             if self.__current_state in self.__final_states:
-                print self.__buffer_words
+                for word in self.__buffer_words:
+                    self.__des_file.write(word)
+                    self.__des_file.write(' ')
+                self.__des_file.write('\n')
+                #initialize the state and buffer
                 self.__current_state = 0
                 self.__buffer_words = [] 
             break
+
+if __name__ == '__main__':
+    agent = Agent()
+    input_file_name = raw_input( "Please put in the file's name:")
+    agent.set_file(input_file_name)
+    agent.parse_file("out.txt")
+    print "The result has been saved in out.txt"
