@@ -27,8 +27,8 @@ class TextManager :
             self.lines = self.file.readlines()
             self.max_line_count = len(self.lines)
         except IOError as e:
-            print "I/O error({0}): {1}".format(e.errno, e.strerror)
-            print "Please try again!!!\n"
+            print ("I/O error({0}): {1}".format(e.errno, e.strerror))
+            print ("Please try again!!!\n")
             raise
 
     def test_put_out(self) :
@@ -37,10 +37,10 @@ class TextManager :
         """
         line_string = self.lines[self.line_count] 
         if line_string != '\n' : 
-             print line_string
+             print (line_string)
         words = re.findall(r'\w+', line_string)
         for word in words :
-            print word
+            print (word)
         self.line_count += 1
   
     def _get_next_line(self) :

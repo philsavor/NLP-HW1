@@ -13,7 +13,7 @@ class Agent:
             'July','August','September','October','November','December',\
             'Jan','Feb','Mar','Apr','May','Aug','Sept','Oct','Nov','Dec')
    day = ('1st','2nd','3rd','4th','5th','6th','7th','8th','9th', \
-          '10th','11st','12nd','13rd','14th','15th','16th','17th','18th','19th', \
+          '10th','11th','12th','13th','14th','15th','16th','17th','18th','19th', \
           '20th','21st','22nd','23rd','24th','25th','26th','27th','28th','29th', \
           '30th','31st','1','2','3','4','5','6','7','8','9', \
           '10','11','12','13','14','15','16','17','18','19', \
@@ -69,10 +69,11 @@ class Agent:
        if self.__text_manager == None:
            return "ERROR:no input file!"
        while 1:
-           word = self.__text_manager.get_next_word() 
+           word = self.__text_manager.get_next_word()
+           self.__automata(word)
            if word == None: 
                break
-           self.__automata(word)
+           
 
    def __automata(self,word):
        """
@@ -165,7 +166,11 @@ class Agent:
                      self.__current_state = 11 
                      self.__buffer_words.append(self.__current_word)
                 elif self.__buffer_words[0] in self.holiday_oneword:
-                     self.__current_state = 200 
+                    if   self.__current_word.isdigit():
+                         self.__current_state = 100
+                         self.__buffer_words.append(', ' + self.__current_word)
+                    else:
+                         self.__current_state = 200 
                 else:
                      self.__current_state = 0
                      self.__buffer_words = []
@@ -181,7 +186,7 @@ class Agent:
                      continue
             #state 13 
             elif self.__current_state == 13 :
-                if self.__current_word == 'Day' :
+                if self.__current_word == 'Day' or self.__current_word == 'Eve' :
                     self.__current_state = 14 
                     self.__buffer_words.append(self.__current_word)
                 #for the situation like: Day after Christmas
@@ -223,7 +228,7 @@ class Agent:
                      continue
             #state 19 
             elif self.__current_state == 19 :
-                if self.__current_word == 'Day' :
+                if self.__current_word == 'Day' or self.__current_word == 'Eve' :
                     self.__current_state = 20 
                     self.__buffer_words.append(self.__current_word)
                 else:
@@ -259,7 +264,9 @@ class Agent:
                      continue
             #year
             elif self.__current_state in self.__final_states:
-               if self.__current_word.isdigit():
+               if self.__current_word == None:
+                    self.__current_state = 100
+               elif self.__current_word.isdigit():
                     self.__current_state = 100
                     self.__buffer_words.append(', ' + self.__current_word)
                else:
@@ -269,23 +276,23 @@ class Agent:
                 for word in self.__buffer_words:
                     #deal with the situation like "Mother's Day"
                     if word == 's':
-                        self.__des_file.write('\'s')
+                        self.__des_file.write(bytes('\'s','UTF-8'))
                     else:
-                        self.__des_file.write(word)
-                    self.__des_file.write(' ')
-                self.__des_file.write('\n')
+                        self.__des_file.write(bytes(word,'UTF-8'))
+                    self.__des_file.write(bytes(' ','UTF-8'))
+                self.__des_file.write(bytes('\r\n','UTF-8'))
                 if self.__current_state == 200:
                     self.__current_state = 0
                     self.__buffer_words = []
                     continue
                 #initialize the state and buffer
                 self.__current_state = 0
-                self.__buffer_words = [] 
+                self.__buffer_words = []
             break
 
 if __name__ == '__main__':
     agent = Agent()
-    input_file_name = raw_input( "Please input the file's name:")
+    input_file_name = input( "Please input the file's name:")
     agent.set_file(input_file_name)
     agent.parse_file("out.txt")
-    print "The result has been saved in out.txt."
+    print ("The result has been saved in out.txt.")
